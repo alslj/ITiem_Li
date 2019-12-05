@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         init();
         //mytimeList.remove(0);
 
+
         Log.d(TAG, mytimeList.size()+"个");
         listView = (ListView)findViewById(R.id.list_view_content_main);
 
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         if ( 0 ==mytimeList.size()){
             mytimeList.add(new Mytime("回家","2019年12月30日", R.drawable.pg4));
         }//为什么修改这里的图片id会影响在文件中的图片id??。
+        //原因：在Mytime_FileResoure中存储文件格式问题。
     }
 
     @Override

@@ -20,7 +20,7 @@ public class Mytime_FileResoure {
 
     public void Mytime_save (){
         try {
-            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput("Mytime", Context.MODE_PRIVATE));
+            ObjectOutputStream out = new ObjectOutputStream(context.openFileOutput("Mytime.txt", Context.MODE_PRIVATE));
             out.writeObject(mytimes);
             out.close();
         }catch (Exception e){
@@ -31,10 +31,10 @@ public class Mytime_FileResoure {
     public ArrayList<Mytime> getMytimes() {
         return mytimes;
     }
-
+    //没有指定储存的文件格式
     public ArrayList<Mytime> Mytime_load(){
         try {
-            ObjectInputStream in = new ObjectInputStream(context.openFileInput("Mytime"));
+            ObjectInputStream in = new ObjectInputStream(context.openFileInput("Mytime.txt"));
             mytimes = (ArrayList<Mytime>) in.readObject();
             in.close();
         } catch (Exception e) {
