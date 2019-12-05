@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Content">
+    <item
+        android:id="@+id/modifer"
+        android:title="@string/bianji"
+        android:icon="@mipmap/ic_edit"
+        android:enabled="true"
+        android:checkable="true"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delet"
+        android:icon="@drawable/ic_menu_delet"
+        android:enabled="true"
+        android:checkable="true"
+        app:showAsAction="always"/>
+
+</menu>
