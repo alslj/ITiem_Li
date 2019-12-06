@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         init();
+        mytimeList.add(new Mytime("毕业","2020年11月10日", R.drawable.pg4));
+        //mytime_adpater.notifyDataSetChanged();
         //mytimeList.remove(0);
 
 
@@ -117,11 +119,25 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("title", mytime.getTitle());
                 bundle.putString("date", mytime.getData());
                 bundle.putInt("photoId", mytime.getCoverResoureID());
+                bundle.putInt("ediPosition", position);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 0);
             }
         });
 
+        //删除操作
+        int i = getIntent().getIntExtra("deleat_result", 0);
+        if(1 == i){
+            int position = getIntent().getIntExtra("ediPosition", 100000);
+            if(100000 != position){
+                mytimeList.remove(position);
+                mytime_adpater.notifyDataSetChanged();
+                Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

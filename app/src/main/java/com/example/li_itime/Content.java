@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -30,7 +31,8 @@ public class Content extends AppCompatActivity {
     private String title, deadline;
     private CountDownTimer countDownTimer;
     private long timesMills_now, timesMills_set, mills;
-    int imageViewid;
+    private int imageViewid;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +47,11 @@ public class Content extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
-
         Bundle bundle = getIntent().getExtras();
         title = bundle.getString("title");
         deadline = bundle.getString("date");
         imageViewid = bundle.getInt("photoId");
-
+        position = bundle.getInt("ediPosition");
 
         collapsingToolbarLayout.setBackgroundResource(imageViewid);
         //设置图片
@@ -79,13 +79,33 @@ public class Content extends AppCompatActivity {
                 finish();
                 break;
             case R.id.modifer:{
+
                 Toast.makeText(this,"选择了修改", Toast.LENGTH_SHORT).show();
                 //修改
                 break;
             }
             case R.id.delete:{
-                Toast.makeText(this,"删除成功", Toast.LENGTH_SHORT).show();
-                //删除
+                new android.app.AlertDialog.Builder(Content.this)
+                        .setTitle("询问")
+                        .setIcon(R.drawable.dead)
+                        .setMessage("真的要删除吗？")
+                        .setPositiveButton("是的", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Content.this, MainActivity.class);
+                                intent.putExtra("deleat_result", 1);
+                                intent.putExtra("ediPosition", position);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("不了", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(Content.this,"逃过一劫", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .create().show();
+
                 break;
             }
         }
@@ -138,7 +158,7 @@ public class Content extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         timesMills_now = calendar.getTimeInMillis();
         try {
-            calendar.setTime(new SimpleDateFormat("yyyy年mm月dd日").parse(deadline));
+            calendar.setTime(new SimpleDateFormat("yyyy年MM月dd日").parse(deadline));
         } catch (ParseException e) {
             e.printStackTrace();
         }
