@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/setImage_Add_list"
+        android:layout_width="77dp"
+        android:layout_height="58dp"
+        android:src="@drawable/ic_calendar" />
+
+    <LinearLayout
+        android:layout_width="331dp"
+        android:layout_height="58dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:id="@+id/text_Add_list"
+            android:text="日期"
+            android:gravity="center"
+            android:textSize="26dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="23dp"
+            android:id="@+id/buchong_Add_list"
+            android:text=""/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
+

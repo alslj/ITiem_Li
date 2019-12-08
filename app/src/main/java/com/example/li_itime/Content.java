@@ -23,6 +23,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static com.example.li_itime.MainActivity.mytimeList;
+import static com.example.li_itime.MainActivity.mytime_adpater;
+
+
 public class Content extends AppCompatActivity {
 
     private TextView textView_conten_title, textView_conten_time, textView_conten_count;
@@ -92,9 +96,9 @@ public class Content extends AppCompatActivity {
                         .setPositiveButton("是的", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                mytimeList.remove(position);
+                                mytime_adpater.notifyDataSetChanged();
                                 Intent intent = new Intent(Content.this, MainActivity.class);
-                                intent.putExtra("deleat_result", 1);
-                                intent.putExtra("ediPosition", position);
                                 startActivity(intent);
                             }
                         })

@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,9 +46,10 @@ import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    private ListView listView;
-    private List<Mytime> mytimeList =new ArrayList<>();
-    private Mytime_Adpater mytime_adpater;
+    public static final int REQUEST_CODE = 901;
+    protected static ListView listView;
+    protected static List<Mytime>  mytimeList =new ArrayList<>();
+    protected static Mytime_Adpater mytime_adpater;
     private Toolbar toolbar;
     private Mytime_FileResoure mytime_fileResoure;
     private  int ediPosition;
@@ -93,14 +93,13 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "还没有完成添加功能",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, Add_Modifier.class);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
         init();
-        mytimeList.add(new Mytime("毕业","2020年11月10日", R.drawable.pg4));
-        //mytime_adpater.notifyDataSetChanged();
-        //mytimeList.remove(0);
+
 
 
         Log.d(TAG, mytimeList.size()+"个");
@@ -119,25 +118,13 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString("title", mytime.getTitle());
                 bundle.putString("date", mytime.getData());
                 bundle.putInt("photoId", mytime.getCoverResoureID());
-                bundle.putInt("ediPosition", position);
+                bundle.putInt("ediPosition", ediPosition);
                 intent.putExtras(bundle);
+                //onDestroy();
                 startActivityForResult(intent, 0);
             }
         });
 
-        //删除操作
-        int i = getIntent().getIntExtra("deleat_result", 0);
-        if(1 == i){
-            int position = getIntent().getIntExtra("ediPosition", 100000);
-            if(100000 != position){
-                mytimeList.remove(position);
-                mytime_adpater.notifyDataSetChanged();
-                Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     @Override
@@ -148,11 +135,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case REQUEST_CODE:
+
+                if(resultCode==1){
+
+                    String biaoti=data.getStringExtra("biaoti");
+                    String date=data.getStringExtra("date");
+                    mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
+                    String str = "保存成功";
+                    Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+                    mytime_adpater.notifyDataSetChanged();
+                    Log.d(TAG, mytimeList.size()+"个");
+                    break;
+                }
+        }
+    }
+
     private void init(){
         mytime_fileResoure = new Mytime_FileResoure(this);
         mytimeList = mytime_fileResoure.Mytime_load();
         if ( 0 ==mytimeList.size()){
-            mytimeList.add(new Mytime("回家","2019年12月30日", R.drawable.pg4));
+            mytimeList.add(new Mytime("西瓜","2019年12月18日", R.drawable.pg6));
         }//为什么修改这里的图片id会影响在文件中的图片id??。
         //原因：在Mytime_FileResoure中存储文件格式问题。
     }
@@ -170,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-      class Mytime_Adpater extends ArrayAdapter<Mytime> {
+    class Mytime_Adpater extends ArrayAdapter<Mytime> {
          private int resoureID;
 
          public Mytime_Adpater(@NonNull Context context, int resource, List<Mytime> mytimeList) {
