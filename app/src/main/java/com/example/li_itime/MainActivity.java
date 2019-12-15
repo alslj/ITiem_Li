@@ -3,6 +3,8 @@ package com.example.li_itime;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String biaoti=data.getStringExtra("biaoti");
                     String date=data.getStringExtra("date");
+                    String imagepath = data.getStringExtra("imagePath");
                     mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
                     String str = "保存成功";
                     Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
@@ -183,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
          public Mytime_Adpater(@NonNull Context context, int resource, List<Mytime> mytimeList) {
              super(context, resource, mytimeList);
+
              resoureID = resource;
          }
 
@@ -197,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
             title.setText(mytime1.getTitle());
             TextView data = view.findViewById(R.id.list_text_date);
             data.setText(mytime1.getData());
-            ImageView imageView = view.findViewById(R.id.image_list_cover);
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(mytime1.getCoverResoureID());
-            final StackBlurManager stackBlurManager = new StackBlurManager(bitmapDrawable.getBitmap());
-            imageView.setImageBitmap(stackBlurManager.process(new Random().nextInt(100)+1));
+             ImageView imageView = view.findViewById(R.id.image_list_cover);
+             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(mytime1.getCoverResoureID());
+             final StackBlurManager stackBlurManager = new StackBlurManager(bitmapDrawable.getBitmap());
+             imageView.setImageBitmap(stackBlurManager.process(new Random().nextInt(100)+1));
 
              try {
                  Calendar calendar = Calendar.getInstance();

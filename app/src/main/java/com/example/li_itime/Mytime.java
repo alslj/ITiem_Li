@@ -6,6 +6,7 @@ public class Mytime implements Serializable {
     private int coverResoureID;
     private String title;
     private String deadline;
+    private String imagePath = "";
 
     public String getTitle(){
         return title;
@@ -17,6 +18,10 @@ public class Mytime implements Serializable {
 
     public int getCoverResoureID(){
         return coverResoureID;
+    }
+
+    public String getImagePath(){
+        return  this.imagePath;
     }
 
 
@@ -32,11 +37,20 @@ public class Mytime implements Serializable {
         this.coverResoureID = i;
     }
 
+    public void setImagePath(String s){
+        this.imagePath = s;
+    }
 
     public Mytime(String title, String deadline, int coverResourceId) {
         this.setTitle(title);
         this.setData(deadline);
         this.setCoverResoureID(coverResourceId);
+    }
+
+    public Mytime(String title, String deadline, String imagePath){
+        this.title = title;
+        this.imagePath = imagePath;
+        this.deadline = deadline;
     }
 
 }
