@@ -11,6 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <provider
+            android:authorities="com.example.li_itime"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path"/>
+        </provider>
         <activity android:name=".Add_Modifier"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:configChanges="keyboardHidden|orientation|screenSize"

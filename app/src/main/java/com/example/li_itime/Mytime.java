@@ -6,7 +6,8 @@ public class Mytime implements Serializable {
     private int coverResoureID;
     private String title;
     private String deadline;
-    private String imagePath = "";
+    private byte[] bitmap;
+    private int judg = 0;
 
     public String getTitle(){
         return title;
@@ -20,11 +21,6 @@ public class Mytime implements Serializable {
         return coverResoureID;
     }
 
-    public String getImagePath(){
-        return  this.imagePath;
-    }
-
-
     public void setTitle(String str){
         this.title = str;
     }
@@ -37,9 +33,19 @@ public class Mytime implements Serializable {
         this.coverResoureID = i;
     }
 
-    public void setImagePath(String s){
-        this.imagePath = s;
+    public void setBitmap(byte[] bytes){
+         bitmap = (byte[])bytes.clone();
+         judg = 1;
     }
+
+    public int getJudg(){
+        return judg;
+    }
+
+    public byte[] getBitmap(){
+        return  bitmap;
+    }
+
 
     public Mytime(String title, String deadline, int coverResourceId) {
         this.setTitle(title);
@@ -47,10 +53,11 @@ public class Mytime implements Serializable {
         this.setCoverResoureID(coverResourceId);
     }
 
-    public Mytime(String title, String deadline, String imagePath){
-        this.title = title;
-        this.imagePath = imagePath;
-        this.deadline = deadline;
+    public Mytime(String title, String deadline, byte[] bytes){
+        this.setTitle(title);
+        this.setData(deadline);
+        this.setBitmap(bytes);
     }
+
 
 }

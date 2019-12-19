@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.bluetooth.le.AdvertiseData;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,6 +43,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -57,6 +63,11 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     private static final int CHOOSE_PHOTO = 2;
     private String imagePath;
     public static final String ADD = "Add_Modifier";
+    public static final int TAKE_PHOTO =1 ;
+    public static final int CHOOSE_PHTOT =2;
+    private Uri uri;
+    private byte[] bitmapByte = null;
+    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,14 +161,38 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                         break;
                     }
                     case 1:{
-                        if (ContextCompat.checkSelfPermission(Add_Modifier.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                   != PackageManager.PERMISSION_GRANTED){
-                            ActivityCompat.requestPermissions(Add_Modifier.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-                        }else {
-                            openAlbum();
-                        }
+                        Toast.makeText(Add_Modifier.this, "你点击了图片",Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(Add_Modifier.this);
+                        dialog.setTitle("选择图片来源")
+                                .setNegativeButton("相册", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        showPictureDialogIncustom();
+                                    }
+                                })
+                                .setPositiveButton("相机", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        File file = new File(getExternalCacheDir(), "out_putimage.jpg");
+                                        try {
+                                            if (file.exists()){
+                                                file.delete();
+                                            }
+                                            file.createNewFile();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
 
-                        break;
+                                        if (Build.VERSION.SDK_INT >= 24){
+                                            uri = FileProvider.getUriForFile(Add_Modifier.this, "com.example.li_itime", file);
+                                        }else {
+                                            uri = Uri.fromFile(file);
+                                        }
+                                        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                                        startActivityForResult(intent, TAKE_PHOTO);
+                                    }
+                                }).show();
                     }
                 }
             }
@@ -200,16 +235,25 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                 if (0 == examin_biaoti.length()){
                     Toast.makeText(Add_Modifier.this, "标题不能为空", Toast.LENGTH_LONG).show();
                 }else {
-                    if (0 == date.length()){
+                    if (date == null){
                         Toast.makeText(Add_Modifier.this, "日期不能为空", Toast.LENGTH_LONG).show();
                     }
                     else {
-                        Intent intent1 = new Intent(this, MainActivity.class);
-                        intent1.putExtra("biaoti", biaoti.getText().toString());
-                        intent1.putExtra("date", examin_date);
-                        intent1.putExtra("imagePath",imagepath1 );
-                        setResult(1, intent1);
-                        Add_Modifier.this.finish();
+                        if (bitmapByte == null) {
+                            Intent intent1 = new Intent(this, MainActivity.class);
+                            intent1.putExtra("biaoti", biaoti.getText().toString());
+                            intent1.putExtra("date", examin_date);
+                            setResult(1, intent1);
+                            Add_Modifier.this.finish();
+                            Log.d(TAG, "onOptionsItemSelected:");
+                        }else {
+                            Intent intent1 = new Intent(this, MainActivity.class);
+                            intent1.putExtra("biaoti", biaoti.getText().toString());
+                            intent1.putExtra("date", examin_date);
+                            intent1.putExtra("bitmap", bitmapByte);
+                            setResult(2, intent1);
+                            Add_Modifier.this.finish();
+                        }
                     }
                 }
                 break;
@@ -239,94 +283,48 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
         }
     }
 
-    private void openAlbum(){
-        Intent intent = new Intent("android.intent.action.GET_CONTENT");
-        intent.setType("image/*");
-        startActivityForResult(intent, CHOOSE_PHOTO);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-            switch (requestCode){
-                case 1:
-                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                        openAlbum();
-                    }else {
-                        Toast.makeText(Add_Modifier.this, "失败",Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-
-                default:
-            }
-        }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode){
-            case CHOOSE_PHOTO:{
-                if (requestCode == RESULT_OK){
-                    if (Build.VERSION.SDK_INT >= 19){
-                        imagePath = handlImageOnKitKat(data);
-                    }else {
-                        imagePath = handlImageBeforKitKat(data);
+            case TAKE_PHOTO :
+                if (resultCode == RESULT_OK){
+                    Bitmap bitmap =  null;
+                    try {
+                         bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
                     }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    bitmapByte = baos.toByteArray();
                 }
                 break;
-            }
+            case CHOOSE_PHTOT:
+                if (resultCode == RESULT_OK){
+                    Uri uri1 = data.getData();
+                    Bitmap bitmap= null;
+                    ContentResolver cr = this.getContentResolver();
+                    try {
+                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri1));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                   bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                   bitmapByte = baos.toByteArray();
+                }
             default:
                 break;
         }
-    }
-    @TargetApi(19)
-    private String handlImageBeforKitKat(Intent data) {
-        String imagePath = null;
-        Uri uri = data.getData();
-
-        if (DocumentsContract.isDocumentUri(this, uri)) {
-            String docId = DocumentsContract.getDocumentId(uri);
-            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                String id = docId.split(":")[1];
-                String selection = MediaStore.Images.Media._ID + "=" + id;
-                imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
-            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://dowmloads/public_downloads"), Long.valueOf(docId));
-                imagePath = getImagePath(contentUri, null);
-            }
-        }else if ("content".equalsIgnoreCase(uri.getScheme())){
-                imagePath = uri.getPath();
-        }else  if ("file".equalsIgnoreCase(uri.getScheme())){
-                imagePath = uri.getPath();
-        }
-
-        return imagePath;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private String handlImageOnKitKat(Intent data) {
-        Uri uri = data.getData();
-        String imagePath = getImagePath(uri, null);
-
-        return imagePath;
-
+    private void showPictureDialogIncustom(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,CHOOSE_PHTOT);
     }
-
-    private String getImagePath(Uri externalContentUri, String selection) {
-        String path = null;
-        Cursor cursor = getContentResolver().query(externalContentUri, null, selection, null,null);
-        if (cursor != null){
-            if (cursor.moveToFirst()) {
-                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            }
-            cursor.close();
-        }
-        return path;
-    }
-
-
-
-
 
 
 }

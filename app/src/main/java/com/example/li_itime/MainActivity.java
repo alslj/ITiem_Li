@@ -1,5 +1,6 @@
 package com.example.li_itime;
 
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -137,28 +138,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode){
-            case REQUEST_CODE:
-
-                if(resultCode==1){
-
-                    String biaoti=data.getStringExtra("biaoti");
-                    String date=data.getStringExtra("date");
-                    String imagepath = data.getStringExtra("imagePath");
-                    mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
-                    String str = "保存成功";
-                    Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-                    mytime_adpater.notifyDataSetChanged();
-                    Log.d(TAG, mytimeList.size()+"个");
-                    break;
-                }
-        }
-    }
-
     private void init(){
         mytime_fileResoure = new Mytime_FileResoure(this);
         mytimeList = mytime_fileResoure.Mytime_load();
@@ -168,11 +147,7 @@ public class MainActivity extends AppCompatActivity {
         //原因：在Mytime_FileResoure中存储文件格式问题。
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mytime_fileResoure.Mytime_save();
-    }
+
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -182,43 +157,86 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class Mytime_Adpater extends ArrayAdapter<Mytime> {
-         private int resoureID;
+        private int resoureID;
 
-         public Mytime_Adpater(@NonNull Context context, int resource, List<Mytime> mytimeList) {
-             super(context, resource, mytimeList);
+        public Mytime_Adpater(@NonNull Context context, int resource, List<Mytime> mytimeList) {
+            super(context, resource, mytimeList);
+            resoureID = resource;
+        }
 
-             resoureID = resource;
-         }
-
-         @SuppressLint("SimpleDateFormat")
-         @NonNull
-         @Override
-         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        @SuppressLint("SimpleDateFormat")
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             Mytime mytime1 = getItem(position);
-
             View view = LayoutInflater.from(getContext()).inflate(resoureID, parent, false);
-            TextView title = view.findViewById(R.id.list_text_title);
-            title.setText(mytime1.getTitle());
-            TextView data = view.findViewById(R.id.list_text_date);
-            data.setText(mytime1.getData());
-             ImageView imageView = view.findViewById(R.id.image_list_cover);
-             BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(mytime1.getCoverResoureID());
-             final StackBlurManager stackBlurManager = new StackBlurManager(bitmapDrawable.getBitmap());
-             imageView.setImageBitmap(stackBlurManager.process(new Random().nextInt(100)+1));
+            assert mytime1 != null;
+            if (mytime1.getJudg() == 0) {
+                TextView title = view.findViewById(R.id.list_text_title);
+                title.setText(mytime1.getTitle());
+                TextView data = view.findViewById(R.id.list_text_date);
+                data.setText(mytime1.getData());
+                ImageView imageView = view.findViewById(R.id.image_list_cover);
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(mytime1.getCoverResoureID());
+                final StackBlurManager stackBlurManager = new StackBlurManager(bitmapDrawable.getBitmap());
+                imageView.setImageBitmap(stackBlurManager.process(50));
+            }else {
+                TextView title = view.findViewById(R.id.list_text_title);
+                title.setText(mytime1.getTitle());
+                TextView data = view.findViewById(R.id.list_text_date);
+                data.setText(mytime1.getData());
+                ImageView imageView = view.findViewById(R.id.image_list_cover);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(mytime1.getBitmap(), 0, mytime1.getBitmap().length);
+                imageView.setImageBitmap(bitmap);
+            }
 
-             try {
-                 Calendar calendar = Calendar.getInstance();
-                 timeMiffls_now = calendar.getTimeInMillis();
+            try {
+                Calendar calendar = Calendar.getInstance();
+                timeMiffls_now = calendar.getTimeInMillis();
 
-                 calendar.setTime(Objects.requireNonNull(new SimpleDateFormat("yyyy年MM月dd日").parse(mytime1.getData())));
-                 timeMilffs_set = calendar.getTimeInMillis();
-                 day=(timeMilffs_set- timeMiffls_now)/(1000*24*60*60);
-             } catch (ParseException e) {
-                 e.printStackTrace();
-             }
-             TextView textView = view.findViewById(R.id.list_text_countday);
-             textView.setText(day+"天");
-             return view;
-         }
-     }
+                calendar.setTime(Objects.requireNonNull(new SimpleDateFormat("yyyy年MM月dd日").parse(mytime1.getData())));
+                timeMilffs_set = calendar.getTimeInMillis();
+                day=(timeMilffs_set- timeMiffls_now)/(1000*24*60*60);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            TextView textView = view.findViewById(R.id.list_text_countday);
+            textView.setText(day+"天");
+            return view;
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case REQUEST_CODE:
+                if(resultCode==1){
+                    String biaoti=data.getStringExtra("biaoti");
+                    String date=data.getStringExtra("date");
+                    mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
+                    String str = "保存成功";
+                    Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+                    mytime_adpater.notifyDataSetChanged();
+                    //Log.d(TAG, mytimeList.size()+"个");
+                    break;
+                }else if (resultCode == 2){
+                    String biaoti=data.getStringExtra("biaoti");
+                    String date=data.getStringExtra("date");
+                    byte[] bytes = data.getByteArrayExtra("bitmap");
+                    mytimeList.add(new Mytime(biaoti, date, bytes));
+                    mytime_adpater.notifyDataSetChanged();
+                    break;
+                }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mytime_fileResoure.Mytime_save();
+    }
 }
+
