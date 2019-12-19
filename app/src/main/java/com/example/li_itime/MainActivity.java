@@ -117,14 +117,28 @@ public class MainActivity extends AppCompatActivity {
                 ediPosition =  position;
                 Intent intent = new Intent(MainActivity.this, Content.class);//显示启动另一个程序
                 Mytime mytime = (Mytime) mytime_adpater.getItem(position);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", mytime.getTitle());
-                bundle.putString("date", mytime.getData());
-                bundle.putInt("photoId", mytime.getCoverResoureID());
-                bundle.putInt("ediPosition", ediPosition);
-                intent.putExtras(bundle);
-                //onDestroy();
-                startActivityForResult(intent, 0);
+                if (mytime.getJudg() == 0){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", mytime.getTitle());
+                    bundle.putString("date", mytime.getData());
+                    bundle.putInt("judge", mytime.getJudg());
+                    bundle.putInt("photoId", mytime.getCoverResoureID());
+                    bundle.putInt("ediPosition", ediPosition);
+                    intent.putExtras(bundle);
+                    //onDestroy();
+                    startActivityForResult(intent, 0);
+                }else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", mytime.getTitle());
+                    bundle.putString("date", mytime.getData());
+                    bundle.putInt("ediPosition", ediPosition);
+                    bundle.putByteArray("bitmap",mytime.getBitmap());
+                    bundle.putInt("judge", mytime.getJudg());
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, 0);
+
+                }
+
             }
         });
 
@@ -142,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         mytime_fileResoure = new Mytime_FileResoure(this);
         mytimeList = mytime_fileResoure.Mytime_load();
         if ( 0 ==mytimeList.size()){
-            mytimeList.add(new Mytime("西瓜","2019年12月18日", R.drawable.pg6));
+            mytimeList.add(new Mytime("西瓜","2020年12月18日", R.drawable.pg10));
         }//为什么修改这里的图片id会影响在文件中的图片id??。
         //原因：在Mytime_FileResoure中存储文件格式问题。
     }
@@ -187,7 +201,8 @@ public class MainActivity extends AppCompatActivity {
                 data.setText(mytime1.getData());
                 ImageView imageView = view.findViewById(R.id.image_list_cover);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(mytime1.getBitmap(), 0, mytime1.getBitmap().length);
-                imageView.setImageBitmap(bitmap);
+                final StackBlurManager stackBlurManager = new StackBlurManager(bitmap);
+                imageView.setImageBitmap(stackBlurManager.process(50));
             }
 
             try {
@@ -214,13 +229,38 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode){
             case REQUEST_CODE:
                 if(resultCode==1){
+
                     String biaoti=data.getStringExtra("biaoti");
                     String date=data.getStringExtra("date");
-                    mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
+                    int num = (int) (Math.random() * 7 + 1);
+                    switch(num){
+                        case 1:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
+                            break;
+                        case 2:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg10));
+                            break;
+                        case 3:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg3));
+                            break;
+                        case 4:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg6));
+                            break;
+                        case 5:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg7));
+                            break;
+                        case 6:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg8));
+                            break;
+                        case 7:
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg9));
+                            break;
+                    }
                     String str = "保存成功";
                     Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
                     mytime_adpater.notifyDataSetChanged();
                     //Log.d(TAG, mytimeList.size()+"个");
+                    mytime_fileResoure.Mytime_save();
                     break;
                 }else if (resultCode == 2){
                     String biaoti=data.getStringExtra("biaoti");
@@ -228,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     byte[] bytes = data.getByteArrayExtra("bitmap");
                     mytimeList.add(new Mytime(biaoti, date, bytes));
                     mytime_adpater.notifyDataSetChanged();
+                    mytime_fileResoure.Mytime_save();
                     break;
                 }
         }

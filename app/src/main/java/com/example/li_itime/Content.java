@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Menu;
@@ -37,6 +41,8 @@ public class Content extends AppCompatActivity {
     private long timesMills_now, timesMills_set, mills;
     private int imageViewid;
     private int position;
+    private byte[] bytes;
+    private int judge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +60,19 @@ public class Content extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         title = bundle.getString("title");
         deadline = bundle.getString("date");
-        imageViewid = bundle.getInt("photoId");
         position = bundle.getInt("ediPosition");
+        judge = bundle.getInt("judge");
 
-        collapsingToolbarLayout.setBackgroundResource(imageViewid);
-        //设置图片
+        if (judge == 0){
+            imageViewid = bundle.getInt("photoId");
+            collapsingToolbarLayout.setBackgroundResource(imageViewid);
+        }else {
+            bytes = bundle.getByteArray("bitmap");
+            assert bytes != null;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Drawable  drawable = new BitmapDrawable(bitmap);
+            collapsingToolbarLayout.setBackground(drawable);
+        }
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -83,7 +97,6 @@ public class Content extends AppCompatActivity {
                 finish();
                 break;
             case R.id.modifer:{
-
                 Toast.makeText(this,"选择了修改", Toast.LENGTH_SHORT).show();
                 //修改
                 break;
