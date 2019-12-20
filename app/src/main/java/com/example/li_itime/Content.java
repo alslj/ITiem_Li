@@ -43,6 +43,7 @@ public class Content extends AppCompatActivity {
     private int position;
     private byte[] bytes;
     private int judge;
+    public static final int RESULT_MODIFER = 904;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +98,12 @@ public class Content extends AppCompatActivity {
                 finish();
                 break;
             case R.id.modifer:{
-                Toast.makeText(this,"选择了修改", Toast.LENGTH_SHORT).show();
-                //修改
+                Intent intent = new Intent(Content.this,Add_Modifier.class);
+                intent.putExtra("title_co",title);
+                intent.putExtra("dead_co", deadline);
+                intent.putExtra("position_co", position);
+                intent.putExtra("getback",2);
+                startActivityForResult(intent, RESULT_MODIFER);
                 break;
             }
             case R.id.delete:{
@@ -109,10 +114,10 @@ public class Content extends AppCompatActivity {
                         .setPositiveButton("是的", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mytimeList.remove(position);
-                                mytime_adpater.notifyDataSetChanged();
                                 Intent intent = new Intent(Content.this, MainActivity.class);
-                                startActivity(intent);
+                                intent.putExtra("ediptionint", position);
+                                setResult(3,intent);
+                                Content.this.finish();
                             }
                         })
                         .setNegativeButton("不了", new DialogInterface.OnClickListener() {
@@ -132,14 +137,18 @@ public class Content extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode){
-            case 1:{
-                if (1==requestCode){
-                   //do something
+        switch (requestCode){
+            case RESULT_MODIFER:
+                if (resultCode == 5){
+                    title = data.getStringExtra("biaoti");
+                    deadline = data.getStringExtra("date");
+                    transfer();
+                    initData();
+                    mytimeList.get(position).setTitle(title);
+                    mytimeList.get(position).setData(deadline);
+                    mytime_adpater.notifyDataSetChanged();
                 }
-                Toast.makeText(this,"修改成功", Toast.LENGTH_SHORT).show();
-                break;
-            }
+
         }
     }
 

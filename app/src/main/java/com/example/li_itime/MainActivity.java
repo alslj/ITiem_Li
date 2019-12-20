@@ -50,6 +50,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 901;
+    public static final int REQUEST_SET = 902;
     protected static ListView listView;
     protected static List<Mytime>  mytimeList =new ArrayList<>();
     protected static Mytime_Adpater mytime_adpater;
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, Add_Modifier.class);
+                intent.putExtra("getback",1);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putInt("ediPosition", ediPosition);
                     intent.putExtras(bundle);
                     //onDestroy();
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, REQUEST_SET);
                 }else {
                     Bundle bundle = new Bundle();
                     bundle.putString("title", mytime.getTitle());
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putByteArray("bitmap",mytime.getBitmap());
                     bundle.putInt("judge", mytime.getJudg());
                     intent.putExtras(bundle);
-                    startActivityForResult(intent, 0);
+                    startActivityForResult(intent, REQUEST_SET);
 
                 }
 
@@ -224,12 +226,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         switch (requestCode){
             case REQUEST_CODE:
                 if(resultCode==1){
-
                     String biaoti=data.getStringExtra("biaoti");
                     String date=data.getStringExtra("date");
                     int num = (int) (Math.random() * 7 + 1);
@@ -271,7 +270,17 @@ public class MainActivity extends AppCompatActivity {
                     mytime_fileResoure.Mytime_save();
                     break;
                 }
+            case REQUEST_SET:
+                if (resultCode == 3){
+                    int position = data.getIntExtra("ediptionint", 1000000);
+                    if (position != 1000000){
+                        mytimeList.remove(position);
+                        mytime_adpater.notifyDataSetChanged();
+                        mytime_fileResoure.Mytime_save();
+                    }
+                }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

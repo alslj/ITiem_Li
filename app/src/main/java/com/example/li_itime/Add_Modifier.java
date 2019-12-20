@@ -61,13 +61,14 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     private  StringBuffer date, time;
     private Toolbar toolbar;
     private static final int CHOOSE_PHOTO = 2;
-    private String imagePath;
+    private String title, deadline;
     public static final String ADD = "Add_Modifier";
     public static final int TAKE_PHOTO =1 ;
     public static final int CHOOSE_PHTOT =2;
     private Uri uri;
     private byte[] bitmapByte = null;
-    public static final String TAG = "MainActivity";
+    private int getback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,16 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        editpition = getIntent().getIntExtra("ediPosition", 100000);
+        getback = getIntent().getIntExtra("getback", -1);
+        if (getback == 2){
+            title=getIntent().getStringExtra("title_co");
+            deadline = getIntent().getStringExtra("dead_co");
+            biaoti.setText(title);
+        }
+
+        editpition = getIntent().getIntExtra("ediPosition", 1000000);
+
+
 
 
         Calendar calendar = Calendar.getInstance();
@@ -113,10 +123,16 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                         builder_date.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                if (date.length() > 0) {
+                                    date.delete(0, date.length());
+                                }
                                 AlertDialog.Builder builder_time = new AlertDialog.Builder(Add_Modifier.this);
                                 builder_time.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        if (time.length() > 0) {
+                                            time.delete(0, time.length());
+                                        }
                                         time = time.append(String.valueOf(hour)).append("时").append(String.valueOf(minute)).append("分");
                                         dialog.dismiss();
                                     }
@@ -224,38 +240,48 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         String examin_biaoti = biaoti.getText().toString().trim();
-        String examin_date = date.toString().trim();
-        String imagepath1 = imagePath;
+        String data =date.toString().trim();
+        if (data != null) {
+            deadline = date.toString().trim();
+        }
         switch (item.getItemId()){
             case android.R.id.home:
                 Intent intent = new Intent(Add_Modifier.this, MainActivity.class);
                 startActivity(intent);
                 break;
             case R.id.quereng:
-                if (0 == examin_biaoti.length()){
-                    Toast.makeText(Add_Modifier.this, "标题不能为空", Toast.LENGTH_LONG).show();
-                }else {
-                    if (date == null){
-                        Toast.makeText(Add_Modifier.this, "日期不能为空", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        if (bitmapByte == null) {
-                            Intent intent1 = new Intent(this, MainActivity.class);
-                            intent1.putExtra("biaoti", biaoti.getText().toString());
-                            intent1.putExtra("date", examin_date);
-                            setResult(1, intent1);
-                            Add_Modifier.this.finish();
-                            Log.d(TAG, "onOptionsItemSelected:");
-                        }else {
-                            Intent intent1 = new Intent(this, MainActivity.class);
-                            intent1.putExtra("biaoti", biaoti.getText().toString());
-                            intent1.putExtra("date", examin_date);
-                            intent1.putExtra("bitmap", bitmapByte);
-                            setResult(2, intent1);
-                            Add_Modifier.this.finish();
-                        }
-                    }
-                }
+               if (getback == 1){
+                   if (0 == examin_biaoti.length()){
+                       Toast.makeText(Add_Modifier.this, "标题不能为空", Toast.LENGTH_LONG).show();
+                   }else {
+                       if (deadline == null){
+                           Toast.makeText(Add_Modifier.this, "日期不能为空", Toast.LENGTH_LONG).show();
+                       }
+                       else {
+                           if (bitmapByte == null) {
+                               Intent intent1 = new Intent(this, MainActivity.class);
+                               intent1.putExtra("biaoti", biaoti.getText().toString());
+                               intent1.putExtra("date", deadline);
+                               setResult(1, intent1);
+                               Add_Modifier.this.finish();
+                               Log.d(ADD, "onOptionsItemSelected:");
+                           }else {
+                               Intent intent1 = new Intent(this, MainActivity.class);
+                               intent1.putExtra("biaoti", biaoti.getText().toString());
+                               intent1.putExtra("date", deadline);
+                               intent1.putExtra("bitmap", bitmapByte);
+                               setResult(2, intent1);
+                               Add_Modifier.this.finish();
+                           }
+                       }
+                   }
+               }else if (getback == 2){
+                   Intent intent2 = new Intent(this, Content.class);
+                   intent2.putExtra("biaoti", examin_biaoti);
+                   intent2.putExtra("date",deadline);
+                   setResult(5,intent2);
+                   Add_Modifier.this.finish();
+               }
                 break;
         }
         return true;
