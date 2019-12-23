@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,6 +20,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -48,9 +51,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import static com.example.li_itime.R.drawable.pg1;
+import static java.lang.Integer.parseInt;
+
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 901;
     public static final int REQUEST_SET = 902;
+    public static final int RESULT_COLOR = 903;
     protected static ListView listView;
     protected static List<Mytime>  mytimeList =new ArrayList<>();
     protected static Mytime_Adpater mytime_adpater;
@@ -61,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
     private long day;
     private AppBarConfiguration mAppBarConfiguration;
     public static final String TAG = "MainActivity";
+    private FloatingActionButton fab;
+    ConstraintLayout constraintLayout;
+    public static String color = "#009688";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +78,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
+
+        toolbar.setBackgroundColor(Color.parseColor(color));
+        fab.setBackgroundColor(Color.parseColor(color));
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -89,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_home:
                         drawer.closeDrawer(GravityCompat.START);
                         break;
+                    case R.id.nav_slideshow:
+                        Intent intent = new Intent(MainActivity.this, ColorChoose.class);
+                        startActivityForResult(intent, RESULT_COLOR);
                 }
                 return false;
             }
@@ -126,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putInt("judge", mytime.getJudg());
                     bundle.putInt("photoId", mytime.getCoverResoureID());
                     bundle.putInt("ediPosition", ediPosition);
+                    bundle.putString("remarks",mytime.getBeizhu());
                     intent.putExtras(bundle);
                     //onDestroy();
                     startActivityForResult(intent, REQUEST_SET);
@@ -231,41 +248,42 @@ public class MainActivity extends AppCompatActivity {
                 if(resultCode==1){
                     String biaoti=data.getStringExtra("biaoti");
                     String date=data.getStringExtra("date");
+                    String beizhu = data.getStringExtra("remarks_add");
                     int num = (int) (Math.random() * 7 + 1);
                     switch(num){
                         case 1:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg1));
+                            mytimeList.add(new Mytime(biaoti,date, pg1,beizhu));
                             break;
                         case 2:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg10));
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg10,beizhu));
                             break;
                         case 3:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg3));
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg3,beizhu));
                             break;
                         case 4:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg6));
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg6,beizhu));
                             break;
                         case 5:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg7));
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg7,beizhu));
                             break;
                         case 6:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg8));
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg8,beizhu));
                             break;
                         case 7:
-                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg9));
+                            mytimeList.add(new Mytime(biaoti,date,R.drawable.pg9,beizhu));
                             break;
                     }
                     String str = "保存成功";
                     Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
                     mytime_adpater.notifyDataSetChanged();
-                    //Log.d(TAG, mytimeList.size()+"个");
                     mytime_fileResoure.Mytime_save();
                     break;
                 }else if (resultCode == 2){
                     String biaoti=data.getStringExtra("biaoti");
                     String date=data.getStringExtra("date");
                     byte[] bytes = data.getByteArrayExtra("bitmap");
-                    mytimeList.add(new Mytime(biaoti, date, bytes));
+                    String beizhu = data.getStringExtra("remarks_add");
+                    mytimeList.add(new Mytime(biaoti, date, bytes,beizhu));
                     mytime_adpater.notifyDataSetChanged();
                     mytime_fileResoure.Mytime_save();
                     break;
@@ -279,6 +297,12 @@ public class MainActivity extends AppCompatActivity {
                         mytime_fileResoure.Mytime_save();
                     }
                 }
+                break;
+            case RESULT_COLOR:
+                color = data.getStringExtra("color");
+                toolbar.setBackgroundColor(Color.parseColor(color));
+                fab.setBackgroundColor(Color.parseColor(color));
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -288,5 +312,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         mytime_fileResoure.Mytime_save();
     }
+
+
+
 }
 

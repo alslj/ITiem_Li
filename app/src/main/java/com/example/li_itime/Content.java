@@ -44,6 +44,8 @@ public class Content extends AppCompatActivity {
     private byte[] bytes;
     private int judge;
     public static final int RESULT_MODIFER = 904;
+    private TextView textView_beizhu;
+    private String beizhu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class Content extends AppCompatActivity {
         textView_conten_count = (TextView) findViewById(R.id.content_count);
         textView_conten_time = (TextView) findViewById(R.id.content_time);
         textView_conten_title = (TextView) findViewById(R.id.content_title);
+        textView_beizhu = (TextView)findViewById(R.id.beizhu);
         appBarLayout = findViewById(R.id.Appbar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,6 +66,7 @@ public class Content extends AppCompatActivity {
         deadline = bundle.getString("date");
         position = bundle.getInt("ediPosition");
         judge = bundle.getInt("judge");
+        beizhu = bundle.getString("remarks");
 
         if (judge == 0){
             imageViewid = bundle.getInt("photoId");
@@ -103,6 +107,7 @@ public class Content extends AppCompatActivity {
                 intent.putExtra("dead_co", deadline);
                 intent.putExtra("position_co", position);
                 intent.putExtra("getback",2);
+                intent.putExtra("remarks", beizhu);
                 startActivityForResult(intent, RESULT_MODIFER);
                 break;
             }
@@ -142,10 +147,12 @@ public class Content extends AppCompatActivity {
                 if (resultCode == 5){
                     title = data.getStringExtra("biaoti");
                     deadline = data.getStringExtra("date");
+                    beizhu = data.getStringExtra("remarks_add");
                     transfer();
                     initData();
                     mytimeList.get(position).setTitle(title);
                     mytimeList.get(position).setData(deadline);
+                    mytimeList.get(position).setBeizhu(beizhu);
                     mytime_adpater.notifyDataSetChanged();
                 }
 
@@ -156,6 +163,7 @@ public class Content extends AppCompatActivity {
     public void initData(){
         textView_conten_title.setText(title);
         textView_conten_time.setText(deadline);
+        textView_beizhu.setText(beizhu);
 
         countDownTimer = new CountDownTimer(mills, 1000) {
             @Override

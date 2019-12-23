@@ -12,7 +12,7 @@
         android:id="@+id/coslayout_Add_Modifier"
         android:layout_width="409dp"
         android:layout_height="300dp"
-        android:background="#F43652"
+        android:background="#009688"
         app:layout_constraintBottom_toTopOf="@+id/listview_add_Modifier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

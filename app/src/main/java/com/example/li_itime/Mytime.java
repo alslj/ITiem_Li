@@ -8,6 +8,7 @@ public class Mytime implements Serializable {
     private String deadline;
     private byte[] bitmap;
     private int judg = 0;
+    private String beizhu = "";
 
     public String getTitle(){
         return title;
@@ -46,6 +47,15 @@ public class Mytime implements Serializable {
         return  bitmap;
     }
 
+    public void setBeizhu(String s){
+        this.beizhu = s;
+
+    }
+
+    public String getBeizhu(){
+        return beizhu;
+    }
+
 
     public Mytime(String title, String deadline, int coverResourceId) {
         this.setTitle(title);
@@ -58,6 +68,23 @@ public class Mytime implements Serializable {
         this.setData(deadline);
         this.setBitmap(bytes);
     }
+
+    public Mytime(String title, String deadline, int coverResourceId, String beizhu) {
+        this.setTitle(title);
+        this.setData(deadline);
+        this.setCoverResoureID(coverResourceId);
+        this.setBeizhu(beizhu);
+    }
+
+    public Mytime(String title, String deadline, byte[] bytes, String beizhu){
+        this.setTitle(title);
+        this.setData(deadline);
+        this.setBitmap(bytes);
+        this.setBeizhu(beizhu);
+
+    }
+
+
 
 
 }

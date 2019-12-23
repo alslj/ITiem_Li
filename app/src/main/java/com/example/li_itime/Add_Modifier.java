@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -22,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +54,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.li_itime.MainActivity.color;
+
 public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDateChangedListener, TimePicker.OnTimeChangedListener{
     private EditText biaoti, beizhu;
     private int year,month,day,hour, minute;
@@ -68,6 +72,8 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     private Uri uri;
     private byte[] bitmapByte = null;
     private int getback;
+    private String remarks;
+    private ConstraintLayout constraintLayout;
 
 
     @Override
@@ -84,12 +90,15 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        constraintLayout = (ConstraintLayout)findViewById(R.id.coslayout_Add_Modifier);
+        constraintLayout.setBackgroundColor(Color.parseColor(color));
         getback = getIntent().getIntExtra("getback", -1);
         if (getback == 2){
             title=getIntent().getStringExtra("title_co");
             deadline = getIntent().getStringExtra("dead_co");
+            remarks = getIntent().getStringExtra("remarks");
             biaoti.setText(title);
+            beizhu.setText(remarks);
         }
 
         editpition = getIntent().getIntExtra("ediPosition", 1000000);
@@ -240,10 +249,12 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         String examin_biaoti = biaoti.getText().toString().trim();
-        String data =date.toString().trim();
-        if (data != null) {
+        String examin_beizhu = beizhu.getText().toString().trim();
+        String examin_deadline = date.toString().trim();
+        if (examin_deadline.length() != 0){
             deadline = date.toString().trim();
         }
+
         switch (item.getItemId()){
             case android.R.id.home:
                 Intent intent = new Intent(Add_Modifier.this, MainActivity.class);
@@ -262,14 +273,25 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                                Intent intent1 = new Intent(this, MainActivity.class);
                                intent1.putExtra("biaoti", biaoti.getText().toString());
                                intent1.putExtra("date", deadline);
+                               if (examin_beizhu != null){
+                                   intent1.putExtra("remarks_add",examin_beizhu);
+                               }else {
+                                   examin_beizhu = " ";
+                                   intent1.putExtra("remarks_add",examin_beizhu);
+                               }
                                setResult(1, intent1);
                                Add_Modifier.this.finish();
-                               Log.d(ADD, "onOptionsItemSelected:");
                            }else {
                                Intent intent1 = new Intent(this, MainActivity.class);
                                intent1.putExtra("biaoti", biaoti.getText().toString());
                                intent1.putExtra("date", deadline);
                                intent1.putExtra("bitmap", bitmapByte);
+                               if (examin_beizhu != null){
+                                   intent1.putExtra("remarks_add",examin_beizhu);
+                               }else {
+                                   examin_beizhu = " ";
+                                   intent1.putExtra("remarks_add",examin_beizhu);
+                               }
                                setResult(2, intent1);
                                Add_Modifier.this.finish();
                            }
@@ -279,6 +301,12 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                    Intent intent2 = new Intent(this, Content.class);
                    intent2.putExtra("biaoti", examin_biaoti);
                    intent2.putExtra("date",deadline);
+                   if (examin_beizhu != null){
+                       intent2.putExtra("remarks_add",examin_beizhu);
+                   }else {
+                       examin_beizhu = " ";
+                       intent2.putExtra("remarks_add",examin_beizhu);
+                   }
                    setResult(5,intent2);
                    Add_Modifier.this.finish();
                }
