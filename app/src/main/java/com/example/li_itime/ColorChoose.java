@@ -14,7 +14,7 @@ public class ColorChoose extends AppCompatActivity {
     private LinearLayout ll;
     private TextView tv;
     private ColorPickerView colorPickerView;
-    private Button button;
+    private Button button, button1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class ColorChoose extends AppCompatActivity {
         ll = (LinearLayout) findViewById(R.id.ll_color);
         tv = (TextView) findViewById(R.id.tv_info);
         button =(Button)findViewById(R.id.Color_que);
-
+        button1=(Button)findViewById(R.id.Color_quxiao);
         colorPickerView = new ColorPickerView(this);
         ll.addView(colorPickerView);
         colorPickerView.setOnColorBackListener(new ColorPickerView.OnColorBackListener() {
@@ -40,6 +40,15 @@ public class ColorChoose extends AppCompatActivity {
                 Intent intent = new Intent(ColorChoose.this, MainActivity.class);
                 intent.putExtra("color", colorPickerView.getStrColor());
                 setResult(7,intent);
+                ColorChoose.this.finish();
+            }
+        });
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ColorChoose.this, MainActivity.class);
+                setResult(8,intent);
                 ColorChoose.this.finish();
             }
         });

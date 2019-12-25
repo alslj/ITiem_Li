@@ -4,6 +4,7 @@ package com.example.li_itime;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -36,6 +37,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     ConstraintLayout constraintLayout;
     public static String color = "#009688";
+    private Window window;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +83,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         fab = findViewById(R.id.fab);
-
+        window = MainActivity.this.getWindow();
         toolbar.setBackgroundColor(Color.parseColor(color));
-        fab.setBackgroundColor(Color.parseColor(color));
-
+        fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
+        widnowColorchose("#009688",window);
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -105,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_slideshow:
                         Intent intent = new Intent(MainActivity.this, ColorChoose.class);
                         startActivityForResult(intent, RESULT_COLOR);
+                        break;
+                    case R.id.nav_send:
+                        Toast.makeText(MainActivity.this,"开发人员：李磊 开发地点：火星 联系方式：没有",Toast.LENGTH_SHORT).show();
+                        break;
                 }
                 return false;
             }
@@ -122,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
         init();
 
 
-
-        Log.d(TAG, mytimeList.size()+"个");
         listView = (ListView)findViewById(R.id.list_view_content_main);
 
         mytime_adpater = new Mytime_Adpater(MainActivity.this, R.layout.item_listview, mytimeList);
@@ -174,10 +180,12 @@ public class MainActivity extends AppCompatActivity {
     private void init(){
         mytime_fileResoure = new Mytime_FileResoure(this);
         mytimeList = mytime_fileResoure.Mytime_load();
+        /*
         if ( 0 ==mytimeList.size()){
             mytimeList.add(new Mytime("西瓜","2020年12月18日", R.drawable.pg10));
         }//为什么修改这里的图片id会影响在文件中的图片id??。
         //原因：在Mytime_FileResoure中存储文件格式问题。
+         */
     }
 
 
@@ -299,9 +307,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case RESULT_COLOR:
-                color = data.getStringExtra("color");
-                toolbar.setBackgroundColor(Color.parseColor(color));
-                fab.setBackgroundColor(Color.parseColor(color));
+                if (resultCode == 7) {
+                    color = data.getStringExtra("color");
+                    toolbar.setBackgroundColor(Color.parseColor(color));
+                    widnowColorchose(color,window);
+                    fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
+                    break;
+                }else if (resultCode  == 8){
+                    //do nothing
+                }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -311,6 +325,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mytime_fileResoure.Mytime_save();
+    }
+
+    protected void widnowColorchose(String color, Window window){
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS|WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.setStatusBarColor(Color.parseColor(color));
     }
 
 

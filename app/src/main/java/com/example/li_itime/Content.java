@@ -128,7 +128,7 @@ public class Content extends AppCompatActivity {
                         .setNegativeButton("不了", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(Content.this,"逃过一劫", Toast.LENGTH_SHORT).show();
+
                             }
                         })
                         .create().show();
@@ -166,27 +166,27 @@ public class Content extends AppCompatActivity {
         textView_beizhu.setText(beizhu);
 
         countDownTimer = new CountDownTimer(mills, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (!Content.this.isFinishing()){
-                    long day = millisUntilFinished/ (1000 * 24 * 60 * 60); //单位天
-                    long hour = (millisUntilFinished - day * (1000 * 24 * 60 * 60)) / (1000 * 60 * 60); //单位时
-                    long minute = (millisUntilFinished - day * (1000 * 24 * 60 * 60) - hour * (1000 * 60 * 60)) / (1000 * 60); //单位分
-                    long second = (millisUntilFinished - day * (1000 * 24 * 60 * 60) - hour * (1000 * 60 * 60) - minute * (1000 * 60)) / 1000;//单位秒
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (!Content.this.isFinishing()){
+                long day = millisUntilFinished/ (1000 * 24 * 60 * 60); //单位天
+                long hour = (millisUntilFinished - day * (1000 * 24 * 60 * 60)) / (1000 * 60 * 60); //单位时
+                long minute = (millisUntilFinished - day * (1000 * 24 * 60 * 60) - hour * (1000 * 60 * 60)) / (1000 * 60); //单位分
+                long second = (millisUntilFinished - day * (1000 * 24 * 60 * 60) - hour * (1000 * 60 * 60) - minute * (1000 * 60)) / 1000;//单位秒
 
-                    textView_conten_count.setText(day+"天"+hour + "小时" + minute + "分钟" + second + "秒");
-
-                }
+                textView_conten_count.setText(day+"天"+hour + "小时" + minute + "分钟" + second + "秒");
 
             }
 
-            @Override
-            public void onFinish() {
+        }
 
-            }
-        };
+        @Override
+        public void onFinish() {
+
+        }
+    };
         countDownTimer.start();
-    }
+}
 
     public void transfer(){
         Calendar calendar = Calendar.getInstance();

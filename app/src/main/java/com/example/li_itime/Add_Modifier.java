@@ -35,6 +35,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -74,6 +76,8 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     private int getback;
     private String remarks;
     private ConstraintLayout constraintLayout;
+    private Window window ;
+    private ListView listView1;
 
 
     @Override
@@ -81,6 +85,8 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add__modifier);
         toolbar = findViewById(R.id.toolbar_Add);
+        window = Add_Modifier.this.getWindow();
+        widnowColorchose(color,window);
         biaoti = (EditText) findViewById(R.id.Add_Modifier_title);
         beizhu = (EditText) findViewById(R.id.beizhu_Add_Modifier);
         listView = (ListView) findViewById(R.id.listview_add_Modifier);
@@ -186,7 +192,6 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                         break;
                     }
                     case 1:{
-                        Toast.makeText(Add_Modifier.this, "你点击了图片",Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder dialog = new AlertDialog.Builder(Add_Modifier.this);
                         dialog.setTitle("选择图片来源")
                                 .setNegativeButton("相册", new DialogInterface.OnClickListener() {
@@ -218,7 +223,39 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                                         startActivityForResult(intent, TAKE_PHOTO);
                                     }
                                 }).show();
+                        break;
                     }
+                    case 2:{
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(Add_Modifier.this);
+                        dialog.setTitle("抱歉")
+                              .setMessage("此功能尚未完成，请取消点击")
+                               .setPositiveButton("退出", new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+
+                                   }
+                               }).show();
+                        break;
+                    }
+                    case 3:{
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(Add_Modifier.this);
+                        final AlertDialog dialog_zhouqi = dialog.create();
+                        View view1=View.inflate(Add_Modifier.this,R.layout.item_aler, null);
+                        listView1 = (ListView)view1.findViewById(R.id.item_alte);
+                        String[] M = {"每年","每月","每周","每天","自定义"};
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Add_Modifier.this,android.R.layout.simple_list_item_1,M);
+                        listView1.setAdapter(adapter);
+                        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                dialog_zhouqi.dismiss();
+                            }
+                        });
+                        dialog_zhouqi.setView(view1);
+                        dialog_zhouqi.show();
+                        break;
+                    }
+
                 }
             }
         });
@@ -379,6 +416,17 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,CHOOSE_PHTOT);
     }
+    protected void widnowColorchose(String color, Window window){
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS|WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor(color));
+    }
+
+
+
+
+
+
 
 
 }

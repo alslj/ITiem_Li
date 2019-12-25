@@ -28,7 +28,15 @@
         android:text="确认"
         android:id="@+id/Color_que"
         android:layout_below="@+id/ll_color"
-        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="250dp"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:id="@+id/Color_quxiao"
+        android:layout_below="@+id/ll_color"
+        android:layout_marginLeft="100dp"/>
 
 </RelativeLayout>

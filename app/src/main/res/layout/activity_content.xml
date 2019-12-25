@@ -92,14 +92,15 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="#000000" />
+                android:background="#72000000" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="10dp"
                 android:background="#ffffff" />
 
             <LinearLayout
+                android:background="#0F008AD4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -107,7 +108,7 @@
                 <ImageView
                     android:layout_width="66dp"
                     android:layout_height="61dp"
-                    android:src="@drawable/dead" />
+                    android:src="@drawable/tongzhi" />
 
                 <TextView
                     android:layout_width="200sp"
@@ -124,11 +125,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="10dp"
                 android:background="#ffffff" />
 
 
             <LinearLayout
+                android:background="#0F008AD4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -136,7 +138,7 @@
                 <ImageView
                     android:layout_width="66dp"
                     android:layout_height="61dp"
-                    android:src="@drawable/dead" />
+                    android:src="@drawable/fucheng" />
 
                 <TextView
                     android:layout_width="200sp"
@@ -153,11 +155,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="10dp"
                 android:background="#ffffff" />
 
 
             <LinearLayout
+                android:background="#0F008AD4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -165,7 +168,7 @@
                 <ImageView
                     android:layout_width="66dp"
                     android:layout_height="61dp"
-                    android:src="@drawable/dead" />
+                    android:src="@drawable/kuaijie" />
 
                 <TextView
                     android:layout_width="200sp"
@@ -182,11 +185,12 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="10dp"
                 android:background="#ffffff" />
 
 
             <LinearLayout
+                android:background="#0F008AD4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -194,7 +198,7 @@
                 <ImageView
                     android:layout_width="66dp"
                     android:layout_height="61dp"
-                    android:src="@drawable/dead" />
+                    android:src="@drawable/rilide" />
 
                 <TextView
                     android:layout_width="200sp"
