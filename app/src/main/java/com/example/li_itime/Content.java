@@ -147,7 +147,7 @@ public class Content extends AppCompatActivity {
                 if (resultCode == 5){
                     title = data.getStringExtra("biaoti");
                     deadline = data.getStringExtra("date");
-                    beizhu = data.getStringExtra("remarks_add");
+                    beizhu = data.getStringExtra("remarks_add_content");
                     transfer();
                     initData();
                     mytimeList.get(position).setTitle(title);

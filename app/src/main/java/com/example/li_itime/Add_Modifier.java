@@ -339,10 +339,10 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                    intent2.putExtra("biaoti", examin_biaoti);
                    intent2.putExtra("date",deadline);
                    if (examin_beizhu != null){
-                       intent2.putExtra("remarks_add",examin_beizhu);
+                       intent2.putExtra("remarks_add_content",examin_beizhu);
                    }else {
                        examin_beizhu = " ";
-                       intent2.putExtra("remarks_add",examin_beizhu);
+                       intent2.putExtra("remarks_add_content",examin_beizhu);
                    }
                    setResult(5,intent2);
                    Add_Modifier.this.finish();

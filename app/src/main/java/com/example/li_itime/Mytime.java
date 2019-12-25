@@ -81,7 +81,6 @@ public class Mytime implements Serializable {
         this.setData(deadline);
         this.setBitmap(bytes);
         this.setBeizhu(beizhu);
-
     }
 
 
