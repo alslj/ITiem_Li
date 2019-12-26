@@ -197,7 +197,12 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
                                 .setNegativeButton("相册", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        showPictureDialogIncustom();
+                                        if (ContextCompat.checkSelfPermission(Add_Modifier.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                != PackageManager.PERMISSION_GRANTED){
+                                            ActivityCompat.requestPermissions(Add_Modifier.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                                        }else {
+                                            showPictureDialogIncustom();
+                                        }
                                     }
                                 })
                                 .setPositiveButton("相机", new DialogInterface.OnClickListener() {
@@ -287,9 +292,10 @@ public class Add_Modifier extends AppCompatActivity implements DatePicker.OnDate
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         String examin_biaoti = biaoti.getText().toString().trim();
         String examin_beizhu = beizhu.getText().toString().trim();
-        String examin_deadline = date.toString().trim();
+        String examin_deadline = date.toString().trim()+time.toString().trim();
+        Log.d("Add_Modifier", examin_deadline);
         if (examin_deadline.length() != 0){
-            deadline = date.toString().trim();
+            deadline = examin_deadline;
         }
 
         switch (item.getItemId()){

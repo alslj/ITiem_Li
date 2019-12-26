@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +27,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 import static com.example.li_itime.MainActivity.mytimeList;
 import static com.example.li_itime.MainActivity.mytime_adpater;
@@ -188,11 +190,12 @@ public class Content extends AppCompatActivity {
         countDownTimer.start();
 }
 
+    @SuppressLint("SimpleDateFormat")
     public void transfer(){
         Calendar calendar = Calendar.getInstance();
         timesMills_now = calendar.getTimeInMillis();
         try {
-            calendar.setTime(new SimpleDateFormat("yyyy年MM月dd日").parse(deadline));
+            calendar.setTime(Objects.requireNonNull(new SimpleDateFormat("yyyy年MM月dd日HH时mm分").parse(deadline)));
         } catch (ParseException e) {
             e.printStackTrace();
         }

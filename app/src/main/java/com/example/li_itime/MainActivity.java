@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+import static com.example.li_itime.R.drawable.ic_calendar;
 import static com.example.li_itime.R.drawable.pg1;
 import static java.lang.Integer.parseInt;
 
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     public static final String TAG = "MainActivity";
     private FloatingActionButton fab;
-    ConstraintLayout constraintLayout;
     public static String color = "#009688";
     private Window window;
 
@@ -216,16 +216,22 @@ public class MainActivity extends AppCompatActivity {
                 TextView title = view.findViewById(R.id.list_text_title);
                 title.setText(mytime1.getTitle());
                 TextView data = view.findViewById(R.id.list_text_date);
-                data.setText(mytime1.getData());
+                String[] str = mytime1.getData().split("\\D+");
+                String s;
+                s = str[0]+"年"+str[1]+"月"+str[2]+"日";
+                data.setText(s);
                 ImageView imageView = view.findViewById(R.id.image_list_cover);
                 BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(mytime1.getCoverResoureID());
                 final StackBlurManager stackBlurManager = new StackBlurManager(bitmapDrawable.getBitmap());
-                imageView.setImageBitmap(stackBlurManager.process(50));
+                imageView.setImageBitmap(stackBlurManager.process(70));
             }else {
                 TextView title = view.findViewById(R.id.list_text_title);
                 title.setText(mytime1.getTitle());
                 TextView data = view.findViewById(R.id.list_text_date);
-                data.setText(mytime1.getData());
+                String[] str = mytime1.getData().split("\\D+");
+                String s;
+                s = str[0]+"年"+str[1]+"月"+str[2]+"日";
+                data.setText(s);
                 ImageView imageView = view.findViewById(R.id.image_list_cover);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(mytime1.getBitmap(), 0, mytime1.getBitmap().length);
                 final StackBlurManager stackBlurManager = new StackBlurManager(bitmap);
@@ -236,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 timeMiffls_now = calendar.getTimeInMillis();
 
-                calendar.setTime(Objects.requireNonNull(new SimpleDateFormat("yyyy年MM月dd日").parse(mytime1.getData())));
+                calendar.setTime(Objects.requireNonNull(new SimpleDateFormat("yyyy年MM月dd日HH时mm分").parse(mytime1.getData())));
                 timeMilffs_set = calendar.getTimeInMillis();
                 day=(timeMilffs_set- timeMiffls_now)/(1000*24*60*60);
             } catch (ParseException e) {
